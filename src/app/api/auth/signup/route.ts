@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@supabase/supabase-js'
 
 export const POST = async (request: NextRequest) => {
   try {
@@ -11,6 +11,11 @@ export const POST = async (request: NextRequest) => {
         { status: 400 }
       )
     }
+
+    // Supabaseクライアントを動的に作成
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    const supabase = createClient(supabaseUrl, supabaseKey)
 
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
