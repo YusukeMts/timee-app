@@ -28,14 +28,24 @@ export const POST = async (request: NextRequest) => {
     }
 
     /* プロフィール情報の取得*/
-    const { data: profile, error: profileError } = await supabase
+    // 認証済みユーザーのクライアントを作成
+    const authenticatedSupabase = createClient(supabaseUrl, supabaseKey)
+    await authenticatedSupabase.auth.setSession(data.session)
+    
+    const { data: profile, error: profileError } = await authenticatedSupabase
       .from('profiles')
       .select('*')
       .eq('id', data.user.id)
       .single()
 
+    // プロフィールが見つからない場合はプロフィール作成を促す
     if (profileError) {
-      return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
+      return NextResponse.json({ 
+        message: 'Login successful - Profile setup required',
+        user: data.user,
+        session: data.session,
+        needsProfile: true
+      })
     }
 
     return NextResponse.json({ 

@@ -44,11 +44,17 @@ const SigninContent = () => {
         throw new Error(data.error || 'ログインに失敗しました')
       }
 
-      // ログイン成功時の処理（JWTトークンの保存など）
-      localStorage.setItem('token', data.token)
+      // ログイン成功時の処理
+      if (data.session) {
+        localStorage.setItem('token', data.session.access_token)
+      }
       
-      // ダッシュボードまたはプロフィール画面にリダイレクト
-      router.push('/dashboard')
+      // プロフィール設定が必要な場合はプロフィール画面に、そうでなければダッシュボードに
+      if (data.needsProfile) {
+        router.push('/profile')
+      } else {
+        router.push('/dashboard')
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'ログインに失敗しました')
     } finally {
