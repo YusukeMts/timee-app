@@ -47,6 +47,8 @@ const SigninContent = () => {
       // ログイン成功時の処理
       if (data.session) {
         localStorage.setItem('token', data.session.access_token)
+        // Supabaseセッションも保存
+        localStorage.setItem('supabase.auth.token', JSON.stringify(data.session))
       }
       
       // プロフィール設定が必要な場合はプロフィール画面に、そうでなければダッシュボードに

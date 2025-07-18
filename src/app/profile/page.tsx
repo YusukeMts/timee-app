@@ -34,8 +34,21 @@ const ProfilePage = () => {
         const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
         const supabase = createClient(supabaseUrl, supabaseKey)
 
-        // 現在のユーザー情報を取得
+        // 現在のユーザー情報を取得（認証状態を確認）
         const { data: { user } } = await supabase.auth.getUser()
+        
+        // ユーザー情報が取得できない場合は、localStorageのトークンを使用
+        if (!user) {
+          // localStorageから直接セッション情報を取得
+          const storedSession = localStorage.getItem('supabase.auth.token')
+          if (storedSession) {
+            const session = JSON.parse(storedSession)
+            await supabase.auth.setSession(session)
+          } else {
+            router.push('/signin')
+            return
+          }
+        }
         
         if (!user) {
           router.push('/signin')
