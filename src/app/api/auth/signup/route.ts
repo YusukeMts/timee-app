@@ -26,8 +26,12 @@ export const POST = async (request: NextRequest) => {
       return NextResponse.json({ error: authError.message }, { status: 400 })
     }
 
-    if (authData.user) {
-      const { error: profileError } = await supabase
+    if (authData.user && authData.session) {
+      // 認証済みユーザーのクライアントを作成
+      const authenticatedSupabase = createClient(supabaseUrl, supabaseKey)
+      await authenticatedSupabase.auth.setSession(authData.session)
+
+      const { error: profileError } = await authenticatedSupabase
         .from('profiles')
         .insert({
           id: authData.user.id,
