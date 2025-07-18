@@ -98,6 +98,34 @@ npm run lint       # Run linting
 - JWT for authentication
 - QR code generation/scanning for業務管理
 
+## 実装済み機能
+
+### Sprint 1: 基盤構築スプリント ✅
+
+**バックエンド実装済み**:
+- ✅ ユーザー登録API (`/api/auth/signup`)
+- ✅ ログインAPI (`/api/auth/signin`)
+- ✅ Supabase認証システム統合
+- ✅ プロフィールテーブル連携
+
+**フロントエンド実装済み**:
+- ✅ 新規登録画面 (`/signup`)
+- ✅ ログイン画面 (`/signin`)
+- ✅ アロー関数によるコンポーネント実装
+- ✅ Tailwind CSSによるレスポンシブデザイン
+- ✅ エラーハンドリング
+- ✅ 登録成功メッセージ表示
+
+**デプロイ・インフラ**:
+- ✅ GitHubリポジトリ連携
+- ✅ Vercelデプロイ設定
+- ✅ 環境変数設定
+- ✅ ビルドエラー修正（Suspense boundary対応）
+
+### 次のタスク
+- 🔄 ワーカーのプロフィール登録・編集画面
+- 🔄 APIとの接続実装
+
 ## Important Development Notes
 
 - セキュリティ第一：パスワードは必ずハッシュ化
@@ -107,3 +135,4 @@ npm run lint       # Run linting
 - データベース設計時はリレーション整合性を考慮
 - 段階的開発：各スプリントの完了条件を満たしてから次へ進む
 - React/TypeScriptコンポーネントはアロー関数で記述する
+- useSearchParams()は必ずSuspense boundaryで囲む
