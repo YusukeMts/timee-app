@@ -3,6 +3,7 @@
 import { useState, Suspense } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { createClient } from '@/lib/supabase'
 
 const SigninContent = () => {
   const [formData, setFormData] = useState({
@@ -27,32 +28,26 @@ const SigninContent = () => {
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/auth/signin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password
-        }),
+      const supabase = createClient()
+      
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password
       })
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || 'ログインに失敗しました')
+      if (error) {
+        throw new Error(error.message)
       }
 
-      // ログイン成功時の処理
-      if (data.session) {
-        localStorage.setItem('token', data.session.access_token)
-        // Supabaseセッションも保存
-        localStorage.setItem('supabase.auth.token', JSON.stringify(data.session))
-      }
-      
+      // プロフィール情報を確認
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', data.user.id)
+        .single()
+
       // プロフィール設定が必要な場合はプロフィール画面に、そうでなければダッシュボードに
-      if (data.needsProfile) {
+      if (!profile) {
         router.push('/profile')
       } else {
         router.push('/dashboard')

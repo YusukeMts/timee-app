@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@/lib/supabase'
 
 const ProfilePage = () => {
   const [formData, setFormData] = useState({
@@ -23,23 +23,9 @@ const ProfilePage = () => {
   useEffect(() => {
     const loadProfile = async () => {
       try {
-        // まずlocalStorageからセッション情報を取得
-        const storedSession = localStorage.getItem('supabase.auth.token')
-        if (!storedSession) {
-          router.push('/signin')
-          return
-        }
-
-        // Supabaseクライアントを動的に作成
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-        const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-        const supabase = createClient(supabaseUrl, supabaseKey)
-
-        // セッションを復元
-        const session = JSON.parse(storedSession)
-        await supabase.auth.setSession(session)
-
-        // 現在のユーザー情報を取得
+        const supabase = createClient()
+        
+        // 現在のユーザー情報を取得（自動でセッション確認）
         const { data: { user } } = await supabase.auth.getUser()
         
         if (!user) {
@@ -92,23 +78,9 @@ const ProfilePage = () => {
     setIsLoading(true)
 
     try {
-      // セッション情報を取得
-      const storedSession = localStorage.getItem('supabase.auth.token')
-      if (!storedSession) {
-        router.push('/signin')
-        return
-      }
-
-      // Supabaseクライアントを動的に作成
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-      const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-      const supabase = createClient(supabaseUrl, supabaseKey)
-
-      // セッションを復元
-      const session = JSON.parse(storedSession)
-      await supabase.auth.setSession(session)
-
-      // 現在のユーザー情報を取得
+      const supabase = createClient()
+      
+      // 現在のユーザー情報を取得（自動でセッション確認）
       const { data: { user } } = await supabase.auth.getUser()
       
       if (!user) {
