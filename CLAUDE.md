@@ -12,9 +12,9 @@ Timeeは人材紹介のマッチングシステムです。ワーカー（求職
 **ゴール**: ユーザーがアプリに登録し、自分のプロフィールを作成できる
 
 **バックエンド要件**:
-- ユーザー登録、ログインAPI
-- パスワードのハッシュ化とデータベース保存
-- JWT認証の実装
+- ✅ Supabase認証システム（APIレス）
+- ✅ 自動セッション管理
+- ✅ RLS（Row Level Security）設定
 
 **フロントエンド要件**:
 - 新規登録画面
@@ -99,19 +99,35 @@ npm run lint       # Run linting
 - Next.js 15 with App Router
 - TypeScript for type safety
 - Tailwind CSS for styling
-- PostgreSQL/MySQL for database
-- JWT for authentication
+- Supabase (PostgreSQL) for database
+- Supabase Auth（JWTベース）for authentication
+- @supabase/ssr for session management
 - QR code generation/scanning for業務管理
+
+## API Design Philosophy
+
+### APIが必要な場面
+- 複雑なビジネスロジック（給与計算、評価集計など）
+- 外部サービス連携（メール送信、SMS、決済処理）
+- データの加工・集計（レポート生成、統計）
+- セキュリティが重要な処理（管理者権限操作）
+- 複数のデータソースの結合
+
+### APIが不要な場面（Supabaseで直接処理）
+- シンプルなCRUD操作
+- 認証処理（signup/signin）
+- リアルタイム機能
+- 基本的なデータ取得・更新
 
 ## 実装済み機能
 
 ### Sprint 1: 基盤構築スプリント ✅
 
 **バックエンド実装済み**:
-- ✅ ユーザー登録API (`/api/auth/signup`)
-- ✅ ログインAPI (`/api/auth/signin`)
-- ✅ Supabase認証システム統合
+- ✅ Supabase認証システム（直接認証）
+- ✅ 自動セッション管理（@supabase/ssr）
 - ✅ プロフィールテーブル連携
+- ✅ RLS（Row Level Security）設定
 
 **フロントエンド実装済み**:
 - ✅ 新規登録画面 (`/signup`)
