@@ -16,7 +16,7 @@ const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
-  const [isEditing, setIsEditing] = useState(false)
+  const [isEditing] = useState(true) // Always true with auto profile creation
   const router = useRouter()
 
   // プロフィール情報を取得
@@ -44,6 +44,7 @@ const ProfilePage = () => {
           throw error
         }
 
+        // With auto profile creation, there should always be a profile
         if (profile) {
           setFormData({
             firstName: profile.first_name || '',
@@ -53,8 +54,9 @@ const ProfilePage = () => {
             avatarUrl: profile.avatar_url || '',
             userType: profile.user_type?.toLowerCase() || 'worker'
           })
-          setIsEditing(true)
         }
+        
+        // Profile should always exist via trigger, no need to set editing mode
       } catch (err) {
         console.error('プロフィール読み込みエラー:', err)
         setError('プロフィール情報の読み込みに失敗しました')
@@ -100,26 +102,17 @@ const ProfilePage = () => {
         updated_at: new Date().toISOString()
       }
 
-      let result
-      if (isEditing) {
-        // 更新
-        result = await supabase
-          .from('profiles')
-          .update(profileData)
-          .eq('id', user.id)
-      } else {
-        // 新規作成
-        result = await supabase
-          .from('profiles')
-          .insert(profileData)
-      }
+      // With auto profile creation, we always update existing profile
+      const result = await supabase
+        .from('profiles')
+        .update(profileData)
+        .eq('id', user.id)
 
       if (result.error) {
         throw result.error
       }
 
-      setSuccess(isEditing ? 'プロフィールを更新しました' : 'プロフィールを作成しました')
-      setIsEditing(true)
+      setSuccess('プロフィールを更新しました')
     } catch (err) {
       console.error('プロフィール保存エラー:', err)
       setError('プロフィールの保存に失敗しました')
@@ -134,10 +127,10 @@ const ProfilePage = () => {
         <div className="bg-white shadow-lg rounded-lg p-8">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900">
-              {isEditing ? 'プロフィール編集' : 'プロフィール登録'}
+              プロフィール編集
             </h1>
             <p className="mt-2 text-gray-600">
-              {isEditing ? 'プロフィール情報を更新してください' : 'プロフィール情報を入力してください'}
+              プロフィール情報を更新してください
             </p>
           </div>
 
@@ -275,7 +268,7 @@ const ProfilePage = () => {
                 disabled={isLoading}
                 className="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoading ? '保存中...' : (isEditing ? '更新する' : '登録する')}
+                {isLoading ? '保存中...' : '更新する'}
               </button>
             </div>
           </form>

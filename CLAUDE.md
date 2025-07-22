@@ -145,8 +145,19 @@ npm run lint       # Run linting
 - ✅ 環境変数設定
 - ✅ ビルドエラー修正（Suspense boundary対応）
 
+**認証フロー実装済み**:
+- ✅ Database Triggersで自動プロフィール作成 (`supabase/migrations/001_create_auto_profile_trigger.sql`)
+- ✅ メール認証後の自動リダイレクト機能（ルートページから認証状態に応じた画面へ）
+- ✅ 認証済みユーザーのプロフィール画面自動誘導
+- ✅ 未認証ユーザーのサインイン画面自動誘導
+
+**完成したページ**:
+- ✅ `/` - 認証状態チェック・自動リダイレクト画面
+- ✅ `/signup` - 新規登録（姓名、アカウントタイプ選択対応）
+- ✅ `/signin` - ログイン（プロフィール確認後の適切な画面誘導）
+- ✅ `/profile` - プロフィール編集（自動作成されたプロフィールの更新）
+
 ### 次のタスク
-- 🔄 Database Triggersで自動プロフィール作成
 - 🔄 Sprint 2「しごと」スプリントの開始
 
 ## Important Development Notes

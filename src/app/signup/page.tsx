@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase'
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({
@@ -41,29 +42,32 @@ const SignupPage = () => {
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          user_type: formData.userType
-        }),
+      const supabase = createClient()
+      
+      // Supabase Auth で直接登録
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            user_type: formData.userType.toUpperCase()
+          }
+        }
       })
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || '登録に失敗しました')
+      if (error) {
+        throw error
       }
 
-      router.push('/signin?message=registration-success')
-    } catch (err) {
-      setError(err instanceof Error ? err.message : '登録に失敗しました')
+      if (data.user && !data.user.email_confirmed_at) {
+        router.push('/signin?message=check-email')
+      } else {
+        router.push('/profile')
+      }
+    } catch (err: any) {
+      setError(err.message || '登録に失敗しました')
     } finally {
       setIsLoading(false)
     }
