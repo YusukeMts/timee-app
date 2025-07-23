@@ -124,10 +124,26 @@ npm run lint       # Run linting
 ### Sprint 1: 基盤構築スプリント ✅
 
 **バックエンド実装済み**:
-- ✅ Supabase認証システム（直接認証）
-- ✅ 自動セッション管理（@supabase/ssr）
-- ✅ プロフィールテーブル連携
-- ✅ RLS（Row Level Security）設定
+- ✅ Supabase認証システム設定
+  - ✅ Supabaseプロジェクト作成・設定
+  - ✅ 環境変数設定（NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY）
+  - ✅ @supabase/supabase-js, @supabase/ssr パッケージインストール
+  - ✅ Supabase クライアント設定（/src/lib/supabase.ts）
+- ✅ 認証機能実装
+  - ✅ signUp（メール/パスワード認証）
+  - ✅ signIn（ログイン機能）
+  - ✅ signOut（ログアウト機能）
+  - ✅ getUser（セッション確認）
+  - ✅ メール認証フロー
+- ✅ データベース設計・実装
+  - ✅ profilesテーブル作成
+  - ✅ Database Triggers（自動プロフィール作成）
+  - ✅ RLS（Row Level Security）ポリシー設定
+  - ✅ TypeScript型定義（Database型）
+- ✅ セッション管理
+  - ✅ @supabase/ssr による自動セッション管理
+  - ✅ クライアントサイド認証状態管理
+  - ✅ 認証状態に応じたUI切替
 
 **フロントエンド実装済み**:
 - ✅ 新規登録画面 (`/signup`)

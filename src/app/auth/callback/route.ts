@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(request: NextRequest) {
+export const GET = async (request: NextRequest) => {
   const { searchParams } = new URL(request.url)
   const code = searchParams.get('code')
 
